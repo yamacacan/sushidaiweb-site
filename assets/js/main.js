@@ -122,3 +122,18 @@
   var yil = document.getElementById('yil');
   if (yil) yil.textContent = new Date().getFullYear();
 })();
+
+/* file:// uyumluluğu: klasör linklerine index.html ekler (canlıda çalışmaz) */
+(function () {
+  'use strict';
+  if (location.protocol !== 'file:') return;
+  var links = document.querySelectorAll('a[href]');
+  for (var i = 0; i < links.length; i++) {
+    var h = links[i].getAttribute('href');
+    if (!h || h.charAt(0) === '#' || h.charAt(0) === '/' || /^[a-z][a-z0-9+.-]*:/i.test(h)) continue;
+    var m = /^([^#?]*)(.*)$/.exec(h);
+    var p = m[1];
+    if (p === '.' || p === '..') p += '/';
+    if (p.slice(-1) === '/') links[i].setAttribute('href', p + 'index.html' + m[2]);
+  }
+})();

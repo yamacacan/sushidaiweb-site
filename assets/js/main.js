@@ -31,5 +31,26 @@
   });
   box.addEventListener('click', function () { box.close(); });
 
+  // Menü: aktif kategori vurgusu (JS yoksa tüm kategoriler zaten görünür)
+  var chips = document.querySelectorAll('.chips a');
+  var cats = document.querySelectorAll('.menu-cat');
+  if (chips.length && 'IntersectionObserver' in window) {
+    var strip = document.querySelector('.chips');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        chips.forEach(function (a) {
+          var on = a.getAttribute('href') === '#' + en.target.id;
+          a.classList.toggle('active', on);
+          if (on) {
+            a.setAttribute('aria-current', 'true');
+            strip.scrollTo({ left: a.offsetLeft - strip.clientWidth / 2 + a.offsetWidth / 2, behavior: 'smooth' });
+          } else a.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-150px 0px -65% 0px' });
+    cats.forEach(function (c) { io.observe(c); });
+  }
+
   document.getElementById('yil').textContent = new Date().getFullYear();
 })();
